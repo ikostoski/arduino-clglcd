@@ -40,7 +40,7 @@ First thing to note is that the pixel clock (_CL2_), according to the i.e. LC794
 
 With character generation, for 320 pixels horizontal resolution, I manage to do this in 20&micro;s (4MHz _CL2_ clock x 80 pulses) which leaves 39.5&micro;s to do other things (typical _CL1_ pulse period for tested module is 59.5&micro;s for 70Hz refresh rate). There is some ISR and "management" overhead, so it is more likely AVR is being busy 45% of available time just with the display. On the positive side, text screen buffer is memory mapped and can be written very quickly.
 
-If you need more available "user" time, you can reduce the refresh rate (my module worked OK down to 50Hz) and/or you can increase AVR clock to i.e. 20MHz, both of which will increase the 952 ticks period between interrupts and give you more time for Your stuff.
+If you need more available "user" time, you can reduce the refresh rate (my module worked OK down to 50Hz) and/or you can increase AVR clock to i.e. 20MHz, both of which will increase the 952 ticks period between interrupts and give you more time for your stuff.
 
 I use Output Compare timer pin with period of 4 F<sub>CLK</sub> ticks to toggle _CL2_ pin (4MHz with 50% duty cycle) and synchronously place the data on GPIO pins of single port (i.e. PORTB, connected to _D0_-_D3_ on the module), aligning that data is changed on rising edge and stable on falling edge of the _CL2_ signal. At this rate, assembler is required to use the tricks AVR has up its sleeve.  
 
@@ -71,7 +71,7 @@ The timing of the signals should resemble something like this:
 ![FLM latch](/timings/flm_latch.png?raw=true "FLM Latching and CL1 toggle")
 ![Data shift](/timings/cl2-data.png?raw=true "Data shifting on CL2 clock")
 
-The code uses font character data (256 characters) stored in flash and screen buffer in SRAM (40bytes x number of lines), one byte for each character. Horizontal size of the font is fixed to 8 pixels, i.e. 40 characters per line. Vertical size of the font is configurable, as long as you can fit whole number of lines in display's vertical resolution. For i.e. 240 lines vertical resolution, supported font sizes would be i.e. 6, 8, 10, 12, 15, 16, etc... The smaller the font, more SRAM is needed to hold the screen buffer (and less flash). For 8x8 fonts, you need 40x30 = 1200 bytes of SRAM and 256x8 bytes of flash. With 8x16 font (IMHO, best looking on 320x240) you need 600 bytes of SRAM and 4KB flash for the font. Code can be modified if You need more than one font stored in flash (starting font address can be changed to be variable instead of compile time constant), but only one font can be active at a time or You will need to implement changing the font base inside the ISR. 
+The code uses font character data (256 characters) stored in flash and screen buffer in SRAM (40bytes x number of lines), one byte for each character. Horizontal size of the font is fixed to 8 pixels, i.e. 40 characters per line. Vertical size of the font is configurable, as long as you can fit whole number of lines in display's vertical resolution. For i.e. 240 lines vertical resolution, supported font sizes would be i.e. 6, 8, 10, 12, 15, 16, etc... The smaller the font, more SRAM is needed to hold the screen buffer (and less flash). For 8x8 fonts, you need 40x30 = 1200 bytes of SRAM and 256x8 bytes of flash. With 8x16 font (IMHO, best looking on 320x240) you need 600 bytes of SRAM and 4KB flash for the font. Code can be modified if you need more than one font stored in flash (starting font address can be changed to be variable instead of compile time constant), but only one font can be active at a time or you will need to implement changing the font base inside the ISR. 
 
 Font data is organized as top vertical line of all characters (256 bytes) first, than second line of all characters, etc... until vertical size of the font. Font data must be aligned on 256-byte boundary in the flash. There is a Python helper script in the "misc" directory which can be used to convert Windows TTF font into C header file (clglcd_font.h), with PROGMEM byte array in correct format. You can find good selection of bitmap fonts at https://int10h.org/oldschool-pc-fonts/ and elsewhere.
 
@@ -101,7 +101,7 @@ Rest depends on how you will power the module. I like to control the backlight a
 
 ## Using the driver code
 
-Copy clglcd.h and clglcd.cpp files into you Arduino sketch. 
+Copy clglcd.h and clglcd.cpp files into your Arduino sketch. 
 
 Copy and **edit** clglcd_config.h to match you hardware configuration, including pinout connections and features enabled (i.e. soft characters, etc...). Pin names are not Arduino pin numbers, rather actual AVR pin names (i.e. B,5 is PB5 pin). You may need to lookup in the board pinout/schematics. Also timer outputs are actual OCnX lines, i.e. 2,B is OC2B which is on i.e. PD3 on Arduino UNO). Examples have working pinout assignments for boards I have tested with. 
 
@@ -109,7 +109,7 @@ Generate clglcd_font.h file for your sketch (see "Misc" directory for python scr
 
 See examples how to init, start and stop the display and use _screen_ array to place characters on the screen.
 
-Compile and upload the sketch, but before connecting the actual LCD module to the Arduino, I recommend using logic analyzer to check if output of the control pins is what You expect (should be similar to images in "timings" directory) and check LCD drive voltages with multimeter.
+Compile and upload the sketch, but before connecting the actual LCD module to the Arduino, I recommend using logic analyzer to check if output of the control pins is what you expect (should be similar to images in "timings" directory) and check LCD drive voltages with multimeter.
 
 This is just a basic driver and character generator. The rest should be your code, i.e. your emulation of serial connected LCD can go in the main loop. Please share.
 
@@ -117,7 +117,7 @@ This is just a basic driver and character generator. The rest should be your cod
 
 Display needs to be constantly refreshed, which is done in the ISR. While using the display, disabling of the interrupts for anything more than ~30&micro;s will at best produce visual glitches, and if you are unlucky to disable interrupts for more than 60&micro;s while _FLM_ signal is up, you can cause damage to the LCD module (more than one active bit can be shifted in common drivers, making absolute mess with unpredictable consequences). You can disable the display (_DISPOFF_) before you disable interrupts for longer periods. However, disabling the display every 2 seconds to read a DHT sensor will probably look bad.
 
-Any one-wire (ds18b20, DHTxx), clock-less signal (i.e. ws2812b strips), motors, etc., are likely incompatible with using the same Arduino board, or may require significant effort to integrate (i.e. using USART for one-wire protocol). Pro-Micro clones are so cheap that You can probably dedicate one to the display and talk to it i.e. via I<sup>2</sup>C/USB/UART making it just a LCD controller board. 
+Any one-wire (ds18b20, DHTxx), clock-less signal (i.e. ws2812b strips), motors, etc., are likely incompatible with using the same Arduino board, or may require significant effort to integrate (i.e. using USART for one-wire protocol). Pro-Micro clones are so cheap that you can probably dedicate one to the display and talk to it i.e. via I<sup>2</sup>C/USB/UART making it just a LCD controller board. 
 
 ## Communication
 
@@ -126,3 +126,12 @@ Communication like hardware serial (up to 115200bps), I<sup>2</sup>C or SPI in m
 It also depends on the pins you have leftover after I have taken all the good ones.
 
 USB on 32u4 is fine, as long as you don't query the control endpoint too often (slow ISR code). The CDC driver and its API seem to be quick enough.
+
+## Similar projects
+
+Something similar has already been done with different MCUs:
+- ATmega8515 https://www.mikrocontroller.net/topic/98321#1881082,
+- ATmega8515 https://www.mikrocontroller.net/topic/25099?page=single,
+- PIC http://www.pcbheaven.com/exppages/Reverse-Engineering_an_LCD_Display/?p=0, 
+- ESP32 https://github.com/har-in-air/ESP32-LCD-I2S
+

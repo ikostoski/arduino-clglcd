@@ -586,5 +586,5 @@ void CLGLCD_clear_screen() {
 }
 
 bool CLGLCD_FLM_is_up() {
-  return (PORT(CLGLCD_FLM) & BIT(CLGLCD_FLM));
+  return (PORT(CLGLCD_FLM) & _BV(BIT(CLGLCD_FLM)));
 }
