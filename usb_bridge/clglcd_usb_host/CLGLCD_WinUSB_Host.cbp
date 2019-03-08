@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CLGLCD-WinUSB-Host" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/clglcd_usb_host" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DSTDOUT_DEBUG" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/clglcd_usb_host" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-march=corei7-avx" />
+			<Add option="-Winline" />
+			<Add option="-Wfatal-errors" />
+			<Add option="-Wall" />
+			<Add option="-m64" />
+			<Add option="-g" />
+			<Add option="-fexceptions" />
+			<Add option="-mwindows" />
+			<Add option="-mconsole" />
+		</Compiler>
+		<Linker>
+			<Add option="-O2" />
+			<Add option="-static-libstdc++" />
+			<Add option="-static-libgcc" />
+			<Add option="-m64" />
+			<Add library="setupapi" />
+			<Add library="winusb" />
+		</Linker>
+		<Unit filename="clglcd_exc.h" />
+		<Unit filename="clglcd_ipc.cpp" />
+		<Unit filename="clglcd_ipc.h" />
+		<Unit filename="clglcd_winusb.cpp" />
+		<Unit filename="clglcd_winusb.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
