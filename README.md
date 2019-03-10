@@ -83,6 +83,11 @@ See the demo/example of how to use soft fonts, 64 characters as 128x64 graphics.
 
 Note that using mixed soft and fixed characters, in addition of eating SRAM, slows down shifting of row data by 50% (12 F<sub>CLK</sub> ticks vs 8 ticks for 2x4-bit nibbles), i.e. from 20&micro;s to 30&micro;s per row @16Mhz, leading to about 60% of time spent in the ISR. It is a trade-off. If Arduino is mostly just driving the display, it may be useful.
 
+### Graphics mode with grayscale
+
+If you want to connect the LCD module to a PC via USB, i.e. to display information from the PC world, please see the the [USB bridge](usb_bridge/README.md) demo. It only works with USB MCUs (i.e ATmega32u4), but it can do graphics mode and grayscale.
+
+
 ## Hardware
 
 It is up to you to provide connectors to the display module, power for backlight and LCD drive voltage, starting from i.e. 3x9V batteries for testing, to ICs like MAX749 or equivalent. You should also pull-up or pull-down power control signals and DISPOFF (important to be pulled down and not pulsed during i.e. programming or reset of the board). 
